@@ -32,8 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData();
             formData.append('_token', csrfToken);
             
+            // Gunakan route dari appRoutes
+            const url = `/favorite/${postId}`; 
+            console.log('Using test URL:', url);    
+            
             // Send AJAX request
-            fetch(`/favorite/${postId}`, {
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
@@ -70,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // If we're on the favorites page, remove the card
                     if (window.location.pathname === '/favorites') {
-                        const card = this.closest('.col-md-4');
+                        const card = this.closest('.gallery-item');
                         if (card) {
                             card.remove();
                             

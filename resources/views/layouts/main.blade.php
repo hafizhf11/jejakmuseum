@@ -139,7 +139,12 @@
         });
     });
     </script>
-    
+
+    <script>
+        window.appRoutes = {
+    favoriteToggle: "{{ route('favorite.toggle', ['id' => ':postId']) }}"
+};
+    </script>
     <!-- Favorites functionality script -->
     <script src="{{ asset('js/favorites.js') }}"></script>
     

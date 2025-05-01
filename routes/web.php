@@ -74,12 +74,19 @@ Route::middleware(['web', 'auth', 'is.admin'])->group(function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Route untuk toggle favorite (POST request)
-Route::post('/favorite/{post}', [FavoriteController::class, 'toggle'])
-    ->middleware('auth')
-    ->name('favorite.toggle');
+// Tambahkan ini di web.php untuk testing
+Route::post('/favorite-test/{id}', function($id) {
+    return response()->json(['success' => true, 'id' => $id]);
+})->name('favorite.test');
 
 // Route untuk halaman favorit (GET request)
 Route::get('/favorites', [FavoriteController::class, 'index'])
     ->middleware('auth')
     ->name('favorites.index');
+
+Route::post('/favorite-test-auth/{id}', function($id) {
+    return response()->json(['success' => true, 'id' => $id, 'user' => auth()->id()]);
+})->middleware('auth')->name('favorite.test.auth');
+
+// Tambahkan di web.php 
+Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
