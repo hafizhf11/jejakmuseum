@@ -72,8 +72,14 @@ Route::middleware(['web', 'auth', 'is.admin'])->group(function () {
     Route::resource('/dashboard/posts', DashboardPostController::class);
 });
 
-// Routes untuk fitur favorite
-Route::middleware(['auth'])->group(function() {
-    Route::post('/favorite/{post}', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
-    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route untuk toggle favorite (POST request)
+Route::post('/favorite/{post}', [FavoriteController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('favorite.toggle');
+
+// Route untuk halaman favorit (GET request)
+Route::get('/favorites', [FavoriteController::class, 'index'])
+    ->middleware('auth')
+    ->name('favorites.index');

@@ -5,45 +5,81 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller; // Pastikan ini ada
+use Illuminate\Support\Facades\Log;
 
-class FavoriteController extends Controller // <-- Tambahkan extends Controller di sini
+class FavoriteController extends Controller
 {
     /**
-     * Constructor
+     * Toggle favorite status for a post
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    
-    // Method toggle dan index yang sudah ada
     public function toggle(Post $post)
     {
-        $user = Auth::user();
-        
-        if ($user->hasFavorited($post)) {
-            $user->favorites()->detach($post);
-            $status = false;
-        } else {
-            $user->favorites()->attach($post);
-            $status = true;
+        try {
+            // Pastikan user sudah login
+            if (!Auth::check()) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            
+            $user = Auth::user();
+            
+            // Log aksi untuk debugging
+            Log::info('Toggle favorite request for post: ' . $post->id . ' by user: ' . $user->id);
+            
+            // Cek jika post sudah di-favorite
+            $exists = $user->favorites()->where('post_id', $post->id)->exists();
+            
+            if ($exists) {
+                // Hapus dari favorit
+                $user->favorites()->detach($post->id);
+                $status = false;
+                $message = 'Dihapus dari favorit';
+                Log::info('Removed from favorites');
+            } else {
+                // Tambahkan ke favorit
+                $user->favorites()->attach($post->id);
+                $status = true;
+                $message = 'Ditambahkan ke favorit';
+                Log::info('Added to favorites');
+            }
+            
+            // Return JSON response
+            return response()->json([
+                'status' => $status,
+                'message' => $message,
+                'count' => $post->favoritedBy()->count()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error pada toggle favorite: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        
-        return response()->json([
-            'status' => $status,
-            'message' => $status ? 'Ditambahkan ke favorit' : 'Dihapus dari favorit',
-            'count' => $post->favoritedBy()->count()
-        ]);
     }
     
+    /**
+     * Display user's favorites
+     */
     public function index()
     {
-        $favorites = Auth::user()->favorites()->latest()->paginate(12);
-        return view('favorites.index', [
-            'favorites' => $favorites,
-            'title' => 'Koleksi Favorit Saya',
-            'active' => 'favorites'
-        ]);
+        try {
+            // Pastikan user sudah login
+            if (!Auth::check()) {
+                return redirect()->route('login')
+                    ->with('error', 'Anda harus login terlebih dahulu.');
+            }
+            
+            // Ambil semua post yang di-favorite oleh user
+            $favorites = Auth::user()->favorites()->latest()->paginate(12);
+            
+            // Render view
+            return view('favorites.index', [
+                'favorites' => $favorites,
+                'title' => 'Koleksi Favorit Saya',
+                'active' => 'favorites'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error pada halaman favorites: ' . $e->getMessage());
+            return redirect()->route('home')
+                ->with('error', 'Terjadi kesalahan saat memuat halaman favorit.');
+        }
     }
 }
