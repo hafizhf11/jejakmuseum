@@ -1,0 +1,74 @@
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f5f2;
+    color: #333;
+  }
+
+  header {
+    background-color: #8b5e3c;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  main {
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+  }
+
+  .custom-navbar {
+    background-color: #5a3825; 
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  h1, h2 {
+    color: #5a3825;
+  }
+
+  .card {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #5a3825;
+    font-size: 0.9rem;
+  }
+
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+  
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-registration  input{
+    border-radius: 0;
+    margin-bottom: -1px;
+
+  }
