@@ -9,6 +9,11 @@
                 <a class="nav-link {{ Request::is('dashboard/posts*') ? 'active' : 'text-dark' }}" href="/dashboard/posts">
                     <span data-feather="file-text"></span> My Post</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard/reviews*') ? 'active' : 'text-dark' }}" href="{{ route('dashboard.reviews.index') }}">
+                    <span data-feather="star"></span> Review Manager
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

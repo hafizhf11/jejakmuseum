@@ -54,4 +54,15 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'favorites', 'post_id', 'user_id')
                 ->withTimestamps();
     }
+
+    // Tambahkan di model Post
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?: 0;
+    }
 }

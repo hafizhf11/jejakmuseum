@@ -34,10 +34,7 @@
                                 {{ $post->provinsi }},
                             @endif
                             @if($post->kabupaten)
-                                {{ $post->kabupaten }},
-                            @endif
-                            @if($post->created_at)
-                                {{ $post->created_at->format('Y') }}
+                                {{ $post->kabupaten }}
                             @endif
                         </div>
                         

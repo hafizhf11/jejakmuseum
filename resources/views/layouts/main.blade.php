@@ -147,6 +147,7 @@
     </script>
     <!-- Favorites functionality script -->
     <script src="{{ asset('js/favorites.js') }}"></script>
+    <script src="{{ asset('js/review.js') }}"></script>
     
     <!-- Area untuk script khusus per halaman -->
     @yield('scripts')

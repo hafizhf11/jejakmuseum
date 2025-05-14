@@ -58,4 +58,10 @@ class User extends Authenticatable
     {
         return $this->favorites()->where('post_id', $post->id)->exists();
     }  
+
+    // Tambahkan di model User
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

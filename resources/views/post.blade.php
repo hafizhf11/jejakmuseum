@@ -26,6 +26,17 @@
                 <i class="bi bi-arrow-left"></i> Kembali ke Koleksi
             </a>
             <div class="action-buttons">
+                @auth
+                <button class="action-btn favorite-btn {{ Auth::user()->hasFavorited($post) ? 'active' : '' }}" 
+                        title="{{ Auth::user()->hasFavorited($post) ? 'Hapus dari favorit' : 'Simpan ke favorit' }}"
+                        data-post-id="{{ $post->id }}">
+                    <i class="bi {{ Auth::user()->hasFavorited($post) ? 'bi-star-fill' : 'bi-star' }}"></i>
+                </button>
+            @else
+                <a href="{{ route('login') }}" class="action-btn" title="Login untuk menyimpan ke favorit">
+                    <i class="bi bi-star"></i>
+                </a>
+            @endauth
                 <button class="action-btn share-btn" title="Bagikan">
                     <i class="bi bi-share"></i>
                 </button>
@@ -115,6 +126,222 @@
                     </div>
                 </div>
                 @endif
+
+                <!-- Review Section -->
+                <div id="review-section" class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="m-0">Ulasan Pengunjung</h2>
+                        <div class="rating-summary">
+                            @php $avgRating = $post->getAverageRatingAttribute(); @endphp
+                            <span class="rating-number">{{ number_format($avgRating, 1) }}</span>
+                            <div class="rating-stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $avgRating)
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    @elseif($i <= $avgRating + 0.5)
+                                        <i class="bi bi-star-half text-warning"></i>
+                                    @else
+                                        <i class="bi bi-star text-warning"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                            <span class="rating-count">({{ $post->reviews->count() }} ulasan)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Form untuk submit review jika user login -->
+                        <!-- Form untuk submit review jika user login -->
+                    @auth
+                        @php
+                            $userReview = $post->reviews->where('user_id', auth()->id())->first();
+                        @endphp
+
+                        <div class="review-form-container mb-4">
+                            <!-- Pesan sukses/error -->
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                            
+                            @if(session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+                            
+                            <!-- Review section untuk user yang sudah login dan memberikan review -->
+                            @if($userReview)
+                                <div class="user-review-display p-4 bg-light rounded mb-4">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h4 class="mb-3">Ulasan Anda</h4>
+                                        <button class="btn btn-sm btn-secondary edit-review-btn" title="Edit ulasan">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="fw-bold mb-2">Rating Anda:</div>
+                                        <div class="d-flex">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="bi {{ $i <= $userReview->rating ? 'bi-star-fill' : 'bi-star' }} text-warning me-1"></i>
+                                            @endfor
+                                            <span class="ms-2">({{ $userReview->rating }}/5)</span>
+                                        </div>
+                                    </div>
+                                    
+                                    @if($userReview->comment)
+                                        <div class="mb-0">
+                                            <div class="fw-bold mb-2">Komentar Anda:</div>
+                                            <div class="p-3 bg-white rounded">{{ $userReview->comment }}</div>
+                                        </div>
+                                    @endif
+                                </div>
+                                
+                                <!-- Form Edit Review (tersembunyi secara default) -->
+                                <div id="editReviewForm" style="display: none;">
+                                    <h4>Edit Ulasan Anda</h4>
+                                    <form action="{{ route('reviews.update', $userReview->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Rating</label>
+                                            <div class="star-rating">
+                                                @for($i = 5; $i >= 1; $i--)
+                                                    <input type="radio" name="rating" id="edit-rating-{{ $i }}" value="{{ $i }}" 
+                                                        {{ $userReview->rating == $i ? 'checked' : '' }} required>
+                                                    <label for="edit-rating-{{ $i }}">
+                                                        <i class="bi bi-star-fill"></i>
+                                                    </label>
+                                                @endfor
+                                            </div>
+                                            @error('rating')
+                                                <div class="text-danger small">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="comment" class="form-label">Komentar (Maks. 1000 karakter)</label>
+                                            <textarea class="form-control" id="comment" name="comment" rows="3" 
+                                                maxlength="1000">{{ $userReview->comment }}</textarea>
+                                            <small class="text-muted">
+                                                <span id="char-count">{{ strlen($userReview->comment) }}</span>/1000 karakter
+                                            </small>
+                                            @error('comment')
+                                                <div class="text-danger small">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <button type="submit" class="btn btn-primary">
+                                                Perbarui Ulasan
+                                            </button>
+                                            
+                                            <button type="button" class="btn btn-outline-secondary ms-2" id="cancelEdit">
+                                                Batal
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <form action="{{ route('reviews.destroy', $userReview->id) }}" 
+                                                method="POST" class="d-inline ms-2">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger"
+                                                    onclick="return confirm('Yakin ingin menghapus ulasan ini?')">
+                                                    Hapus Ulasan
+                                                </button>
+                                    </form>
+                                </div>
+                            @else
+                                <!-- User belum memberikan review -->
+                                <h4>Berikan Ulasan</h4>
+                                <form action="{{ route('reviews.store', ['id' => $post->id]) }}" method="POST" id="review-form">
+                                    @csrf
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Rating</label>
+                                        <div class="star-rating">
+                                            @for($i = 5; $i >= 1; $i--)
+                                                <input type="radio" name="rating" id="rating-{{ $i }}" value="{{ $i }}" required>
+                                                <label for="rating-{{ $i }}">
+                                                    <i class="bi bi-star-fill"></i>
+                                                </label>
+                                            @endfor
+                                        </div>
+                                        @error('rating')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="comment" class="form-label">Komentar (Maks. 1000 karakter)</label>
+                                        <textarea class="form-control" id="comment" name="comment" rows="3" 
+                                            maxlength="1000">{{ old('comment') }}</textarea>
+                                        <small class="text-muted">
+                                            <span id="char-count">0</span>/1000 karakter
+                                        </small>
+                                        @error('comment')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">
+                                        Kirim Ulasan
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    @else
+                        <div class="alert alert-info mb-4">
+                            <p class="mb-0"><a href="{{ route('login') }}" class="alert-link">Login</a> untuk memberikan ulasan tentang museum ini.</p>
+                        </div>
+                    @endauth
+                        
+                        <!-- Daftar ulasan dari pengunjung -->
+                        <div class="reviews-list">
+                            <h4 class="mb-3">Semua Ulasan ({{ $post->reviews->count() }})</h4>
+                            
+                            @if($post->reviews->count() > 0)
+                                @foreach($post->reviews->sortByDesc('created_at') as $review)
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <div class="review-user">
+                                                <div class="user-avatar">
+                                                    {{ substr($review->user->name, 0, 1) }}
+                                                </div>
+                                                <div class="user-info">
+                                                    <h5>{{ $review->user->name }}</h5>
+                                                    <span class="review-date">{{ $review->created_at->format('d M Y') }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="review-rating">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= $review->rating)
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    @else
+                                                        <i class="bi bi-star text-secondary"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <div class="review-content">
+                                            <p>{{ $review->comment }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="text-center py-4">
+                                    <p class="text-muted">Belum ada ulasan untuk museum ini.</p>
+                                    <p>Jadilah yang pertama memberikan ulasan!</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             
             <!-- Right Column - Additional Info -->
@@ -344,6 +571,11 @@
 
 .action-btn:hover {
     background-color: #e0e0e0;
+}
+
+.action-btn.favorite-btn.active {
+    background-color: #ffca28;
+    color: #fff;
 }
 
 .action-btn i {
@@ -589,6 +821,105 @@
         font-size: 1.5rem;
     }
 }
+
+/* Review section styling */
+.rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-number {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.rating-stars {
+    display: flex;
+}
+
+.rating-count {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Star rating input */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #ddd;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #ffc107;
+}
+
+/* Review items */
+.reviews-list {
+    margin-top: 20px;
+}
+
+.review-item {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.review-user {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #8B4513;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.user-info h5 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.review-date {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.review-content {
+    color: #555;
+    line-height: 1.5;
+}
 </style>
 
 <script>
@@ -639,6 +970,5 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('URL disalin ke clipboard!');
         });
     }
-});
 </script>
 @endsection

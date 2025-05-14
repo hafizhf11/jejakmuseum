@@ -30,9 +30,15 @@
                     @can('is.admin')
                         <li><a href="/dashboard"><i class="bi bi-layout-text-sidebar-reverse"></i> My Dashboard</a></li>
                         @endcan
-                    <li><a class="dropdown-item" href="{{ route('favorites.index') }}">
-                        <i class="bi bi-star me-2"></i> Koleksi Favorit
-                    </a></li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('favorites.index') }}">
+                        <i class="bi bi-star me-2"></i> Koleksi Favorit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('my.reviews') ? 'active' : '' }}" href="{{ route('my.reviews') }}">
+                            <i class="bi bi-chat-square-text me-1"></i> Ulasan Saya
+                        </a>
+                    </li>
                     <li>
                         <form action="/logout" method="post">
                             @csrf
