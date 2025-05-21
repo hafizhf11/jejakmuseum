@@ -167,6 +167,170 @@
     </div>
 </div>
 
+<!-- Grafik Dashboard -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h4 class="mb-3">Analisis Dashboard</h4>
+    </div>
+    
+    <!-- Grafik Distribusi Rating -->
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Distribusi Rating</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="ratingChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafik Museum per Kategori -->
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Museum per Kategori</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Grafik Tren Ulasan -->
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Tren Ulasan 6 Bulan Terakhir</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="reviewTrendChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Grafik Distribusi Rating
+    const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+    const ratingData = {{ json_encode($ratingDistribution) }};
+    const totalRatings = ratingData.reduce((a, b) => a + b, 0);
+    
+    new Chart(ratingCtx, {
+        type: 'pie',
+        data: {
+            labels: ['1 Bintang', '2 Bintang', '3 Bintang', '4 Bintang', '5 Bintang'],
+            datasets: [{
+                data: ratingData,
+                backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc', '#1cc88a', '#4e73df'],
+                hoverBackgroundColor: ['#be3c2d', '#dda926', '#2c98a8', '#17a673', '#3b62ca'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percentage = totalRatings > 0 ? Math.round((value / totalRatings) * 100) : 0;
+                            return `${context.label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        },
+    });
+
+    // Grafik Museum per Kategori
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = @json($museumsByCategory);
+    
+    new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: categoryData.map(item => item.name),
+            datasets: [{
+                label: 'Jumlah Museum',
+                data: categoryData.map(item => item.posts_count),
+                backgroundColor: '#4e73df',
+                borderColor: '#4e73df',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
+    // Grafik Tren Ulasan
+    const trendCtx = document.getElementById('reviewTrendChart').getContext('2d');
+    const trendData = @json($reviewTrends);
+    
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: trendData.map(item => item.month),
+            datasets: [{
+                label: 'Jumlah Ulasan',
+                data: trendData.map(item => item.count),
+                lineTension: 0.3,
+                backgroundColor: "rgba(78, 115, 223, 0.05)",
+                borderColor: "rgba(78, 115, 223, 1)",
+                pointRadius: 3,
+                pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointBorderColor: "rgba(78, 115, 223, 1)",
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0 // Menampilkan hanya nilai bulat
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.parsed.y} ulasan`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 <style>
 /* Styles for dashboard cards */
 .border-left-primary {
@@ -235,5 +399,6 @@
     background-color: #f8f9fc;
     border-bottom: 1px solid #e3e6f0;
 }
+
 </style>
 @endsection

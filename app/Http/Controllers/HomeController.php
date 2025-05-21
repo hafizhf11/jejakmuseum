@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Article;
 
 class HomeController extends Controller
 {
@@ -20,7 +21,8 @@ class HomeController extends Controller
         return view('home', [
             'title' => 'Home',
             'active' => 'home',
-            'latestPosts' => $latestPosts
+            'latestPosts' => $latestPosts,
+            'latestArticles' => Article::published()->with('user')->latest('published_at')->take(4)->get()
         ]);
     }
 }

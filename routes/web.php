@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardPostController;
 use App\Http\Controllers\DashboardReviewController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SearchController;
 
 // Route untuk halaman publik
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -89,3 +90,17 @@ Route::middleware(['auth', 'is.admin'])->prefix('dashboard')->name('dashboard.')
     Route::get('/reviews/{review}', [DashboardReviewController::class, 'show'])->name('reviews.show');
     Route::delete('/reviews/{review}', [DashboardReviewController::class, 'destroy'])->name('reviews.destroy');
 });
+
+// Article routes (Public)
+Route::get('/articles', [App\Http\Controllers\ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}', [App\Http\Controllers\ArticleController::class, 'show'])->name('articles.show');
+
+// Dashboard Article routes (Admin only)
+Route::middleware(['auth', 'is.admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
+    // Articles routes
+    Route::get('/articles/checkSlug', [App\Http\Controllers\DashboardArticleController::class, 'checkSlug'])->name('articles.checkSlug');
+    Route::resource('/articles', App\Http\Controllers\DashboardArticleController::class);
+});
+
+// Menambahkan route untuk search
+Route::get('/search', [SearchController::class, 'index']);

@@ -14,6 +14,7 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
-        "feather-icons": "^4.29.2"
+        "feather-icons": "^4.29.2",
+        "trix": "^2.1.15"
     }
 }

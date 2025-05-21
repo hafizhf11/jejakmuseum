@@ -7,7 +7,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('dashboard/posts*') ? 'active' : 'text-dark' }}" href="/dashboard/posts">
-                    <span data-feather="file-text"></span> My Post</a>
+                    <span data-feather="file-text"></span> Koleksi Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard/articles*') ? 'active' : 'text-dark' }}" href="/dashboard/articles">
+                    <i data-feather="file-text"></i>
+                    Artikel Post
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('dashboard/reviews*') ? 'active' : 'text-dark' }}" href="{{ route('dashboard.reviews.index') }}">

@@ -21,6 +21,99 @@
     </div>
 </div>
 
+<div class="articles-section">
+    <div class="container">
+        <div class="articles-header">
+            <h2 class="section-title">Artikel Terbaru</h2>
+            <a href="/articles" class="more-link">Lihat semua artikel <i class="bi bi-arrow-right"></i></a>
+        </div>
+        
+        <div class="articles-showcase">
+            @if(isset($latestArticles) && $latestArticles->count())
+                <!-- Featured Article (artikel paling baru) -->
+                <div class="featured-article">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="featured-image">
+                                @if($latestArticles[0]->image)
+                                    <img src="{{ asset('storage/' . $latestArticles[0]->image) }}" alt="{{ $latestArticles[0]->title }}" class="img-fluid rounded-4">
+                                @else
+                                    <img src="https://source.unsplash.com/900x600?museum,artifact" alt="{{ $latestArticles[0]->title }}" class="img-fluid rounded-4">
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="featured-content p-lg-4">
+                                <div class="badge mb-2" style="background-color: #8b5d33; color: white;">Artikel Terbaru</div>
+                                <h3 class="mb-3"><a href="/articles/{{ $latestArticles[0]->slug }}" class="text-decoration-none" style="color: #6b4226;">{{ $latestArticles[0]->title }}</a></h3>
+                                <p class="text-muted">{{ Str::limit($latestArticles[0]->excerpt, 150) }}</p>
+                                <div class="d-flex align-items-center mt-3">
+                                    <div class="author-avatar me-2">
+                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; color: #8b5d33;">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <small class="d-block">{{ $latestArticles[0]->user->name }}</small>
+                                        <small class="text-muted">{{ $latestArticles[0]->published_at->format('d M Y') }}</small>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="/articles/{{ $latestArticles[0]->slug }}" class="btn px-4 py-2 rounded-pill" style="background-color: #6b4226; color: white;">
+                                        Baca Selengkapnya <i class="bi bi-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other Articles - 3 artikel berikutnya -->
+                <div class="other-articles mt-5">
+                    <div class="row">
+                        @foreach($latestArticles->skip(1)->take(3) as $article)
+                            <div class="col-md-4 mb-4">
+                                <div class="article-card h-100 rounded-4 overflow-hidden bg-white shadow-sm">
+                                    <div class="article-img position-relative">
+                                        @if($article->image)
+                                            <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover;">
+                                        @else
+                                            <img src="https://source.unsplash.com/500x300?museum,history,{{ $loop->index }}" alt="{{ $article->title }}" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover;">
+                                        @endif
+                                        <div class="position-absolute top-0 end-0 m-3">
+                                            <div class="bg-white rounded-circle p-2 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#8b5d33" class="bi bi-journal-text" viewBox="0 0 16 16">
+                                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="article-content p-4">
+                                        <h5 class="mb-2"><a href="/articles/{{ $article->slug }}" class="text-decoration-none" style="color: #6b4226;">{{ Str::limit($article->title, 45) }}</a></h5>
+                                        <p class="text-muted small mb-3">{{ Str::limit($article->excerpt, 80) }}</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <small class="text-muted">{{ $article->published_at->format('d M Y') }}</small>
+                                            <a href="/articles/{{ $article->slug }}" class="text-decoration-none" style="color: #8b5d33;">
+                                                Jelajahi <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @else
+                <div class="text-center my-5">
+                    <p class="fs-5 text-muted">Belum ada artikel tersedia.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
+
 <!-- Collections Section - Dipindahkan ke posisi paling bawah -->
 <div class="collections-section">
     <div class="container">
@@ -124,6 +217,62 @@
     margin-top: 15px;
     color: #999;
     font-size: 0.9rem;
+    }
+
+    .articles-section {
+        padding: 60px 0;
+        background-color: #f8f5f2;
+    }
+
+    .articles-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        color: #6b4226;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .more-link {
+        color: #8b5d33;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .featured-article {
+        background-color: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .featured-image img {
+        height: 400px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .article-card {
+        transition: transform 0.3s;
+        border: none;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    @media (max-width: 768px) {
+        .featured-image img {
+            height: 250px;
+        }
+        
+        .featured-content {
+            padding: 1.5rem;
+        }
     }
 
 </style>
