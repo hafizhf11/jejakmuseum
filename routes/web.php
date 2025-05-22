@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardReviewController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\UserManagementController;
 
 // Route untuk halaman publik
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -76,7 +77,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ======= DASHBOARD ROUTES =======
-// PENTING: Konsolidasikan semua route dashboard di satu group
 Route::middleware(['auth', 'is.admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
     // Dashboard home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
@@ -89,6 +89,9 @@ Route::middleware(['auth', 'is.admin'])->prefix('dashboard')->name('dashboard.')
     Route::get('/reviews', [DashboardReviewController::class, 'index'])->name('reviews.index');
     Route::get('/reviews/{review}', [DashboardReviewController::class, 'show'])->name('reviews.show');
     Route::delete('/reviews/{review}', [DashboardReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+    Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
 });
 
 // Article routes (Public)
@@ -104,3 +107,6 @@ Route::middleware(['auth', 'is.admin'])->prefix('dashboard')->name('dashboard.')
 
 // Menambahkan route untuk search
 Route::get('/search', [SearchController::class, 'index']);
+
+// Sesuaikan dengan pola yang Anda gunakan untuk reviews dan posts
+Route::resource('/users', UserManagementController::class)->except(['create', 'store', 'edit', 'update']);

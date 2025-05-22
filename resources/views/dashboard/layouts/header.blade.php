@@ -5,7 +5,7 @@
         <span class="navbar-toggle-icon"></span>
     </button>
     
-    <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search"> 
+    <!-- <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">  -->
 
     <div class="navbar-nav flex-row">
         <div class="nav-item text-nowrap">

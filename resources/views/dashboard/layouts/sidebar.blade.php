@@ -20,6 +20,12 @@
                     <span data-feather="star"></span> Review Manager
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard/users*') ? 'active' : 'text-dark' }}" href="/dashboard/users">
+                    <span data-feather="users"></span>
+                    Manajemen User
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
