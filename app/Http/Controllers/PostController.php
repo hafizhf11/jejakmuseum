@@ -29,7 +29,7 @@ class PostController extends Controller
         $relatedMuseums = Post::where('category_id', $post->category_id)
                             ->where('id', '!=', $post->id)
                             ->latest()
-                            ->take(3)
+                            ->take(4)
                             ->get();
         
         return view('post', [

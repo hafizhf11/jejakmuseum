@@ -498,6 +498,148 @@ body {
     }
 }
 
+@media (max-width: 375px) {
+    /* Header container */
+    .header-container {
+        padding: 10px 15px;
+        gap: 8px;
+    }
+    
+    /* Logo ukuran lebih kecil untuk perangkat kecil */
+    .logo-left, .logo-right {
+        font-size: 18px;
+    }
+    
+    /* Sesuaikan form pencarian */
+    .search-container {
+        flex: 0 1 100%;
+    }
+    
+    /* Perbaiki input group untuk pencarian */
+    .search-form .input-group {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    
+    .search-form .input-group input {
+        font-size: 14px;
+        padding: 8px;
+        height: auto;
+    }
+    
+    .search-form .input-group button {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    
+    .main-navigation ul {
+        flex-direction: row !important; /* Override flex-direction column */
+        justify-content: flex-start;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 5px 10px;
+        gap: 20px !important; /* Jarak antar menu yang lebih kecil */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+    
+    .main-navigation ul::-webkit-scrollbar {
+        display: none; /* Sembunyikan scrollbar di Chrome/Safari */
+    }
+    
+    .main-navigation li {
+        flex: 0 0 auto;
+        display: inline-block;
+    }
+    
+    .main-navigation li a {
+        font-size: 15px; /* Font lebih kecil agar muat */
+        padding: 5px 0;
+    }
+    
+    /* Pastikan container navigasi tidak terlalu lebar */
+    .main-navigation {
+        max-width: 100%;
+        overflow: hidden;
+        padding: 10px 0;
+    }
+    
+    /* Styling tambahan untuk active state */
+    .main-navigation li a.active:after {
+        bottom: -3px; /* Sesuaikan posisi garis aktif */
+        height: 1px;  /* Kurangi ketebalan garis */
+    }
+    
+    /* Perbaikan dropdown agar tidak merusak layout */
+    .dropdown-wrapper .dropdown-menu {
+        left: auto;
+        right: 0;
+    }
+    
+    /* Dropdown menu styling */
+    .dropdown-menu {
+        min-width: 180px;
+        right: -10px; /* Memastikan tidak keluar layar */
+    }
+    
+    .dropdown-menu li a, 
+    .dropdown-menu li button.dropdown-item {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+}
+
+/* Perbaikan umum untuk perangkat mobile */
+@media (max-width: 576px) {
+    /* Pastikan container tidak overflow */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Buat header container lebih rapi */
+    .header-container {
+        flex-wrap: wrap;
+    }
+    
+    /* Mengatur urutan tampilan elemen pada header */
+    .logo-left {
+        order: 1;
+        flex: 1;
+    }
+    
+    .logo-right {
+        order: 2;
+        flex: 1;
+        text-align: right;
+    }
+    
+    .search-container {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: 10px;
+    }
+    
+    /* Memastikan navbar scrollable horizontal jika item terlalu banyak */
+    .main-navigation ul {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-wrap: nowrap;
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox */
+        padding-bottom: 5px;
+    }
+    
+    .main-navigation ul::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+    
+    .main-navigation li {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+}
+
 /* Navigation - additional styles */
 .main-navigation li a.active {
     position: relative;
@@ -1277,6 +1419,7 @@ body {
         padding: 0 40px;
     }
 } 
+
 
 /* Bootstrap-like utility classes */
 .mt-5 { margin-top: 3rem; }

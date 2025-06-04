@@ -37,12 +37,6 @@
                     <i class="bi bi-star"></i>
                 </a>
             @endauth
-                <button class="action-btn share-btn" title="Bagikan">
-                    <i class="bi bi-share"></i>
-                </button>
-                <!-- <button class="action-btn favorite-btn" title="Tambah ke favorit">
-                    <i class="bi bi-bookmark"></i>
-                </button> -->
                 <div class="artwork-actions">
                     <button 
                         class="action-btn favorite {{ Auth::check() && Auth::user()->hasFavorited($post) ? 'active' : '' }}" 
@@ -393,29 +387,6 @@
                     </div>
                 </div>
                 
-                <!-- Visit Information -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="m-0">Informasi Kunjungan</h2>
-                    </div>
-                    <div class="card-body">
-                        <ul class="visit-info">
-                            <li class="visit-item">
-                                <i class="bi bi-clock"></i>
-                                <span>Jam Operasional: 09:00 - 16:00</span>
-                            </li>
-                            <li class="visit-item">
-                                <i class="bi bi-calendar-check"></i>
-                                <span>Buka: Senin - Sabtu</span>
-                            </li>
-                            <li class="visit-item">
-                                <i class="bi bi-ticket-perforated"></i>
-                                <span>Tiket Masuk: Rp25.000</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
                 <!-- Related Museums -->
                 <div class="card">
                     <div class="card-header">
@@ -452,6 +423,41 @@
     background-color: #f8f9fa;
     padding-top: 0; /* Menghilangkan gap dari navbar ke konten */
     margin-top: 0;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Mengatur kolom kiri dan kanan di dalam row */
+.col-lg-4, .col-lg-8 {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mengatur lokasi museum card dengan tinggi yang lebih kecil */
+.card.mb-4:has(#museumMap) {
+    height: auto;
+    max-height: 400px; /* Sesuaikan tinggi maksimal peta */
+    margin-bottom: 20px;
+}
+
+#museumMap {
+    height: 250px !important; /* Kurangi tinggi peta */
+}
+
+/* Memastikan card museum terkait mengisi sisa ruang */
+.card:has(.related-list) {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.related-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 500px); /* Sesuaikan jika perlu */
 }
 
 /* Menghapus margin dan padding standar */
