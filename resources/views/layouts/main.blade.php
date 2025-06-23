@@ -83,11 +83,11 @@
             @include('partials.navbar')
             
             @if(isset($showHero) && $showHero)
-            <div class="hero-banner" style="background-image: url('https://picsum.photos/1600/900');">
+            <div class="hero-banner" style="background-image: url('{{ asset('img/home.jpg') }}');">
                 <div class="hero-content">
-                    <h1>Traces of the Indonesian Digital Museum</h1>
-                    <p>Thousands of techniques, genres and media to explore</p>
-                    <a href="#" class="more-button">More artworks <i class="bi bi-arrow-right"></i></a>
+                    <h1>Jejak Museum Indonesia</h1>
+                    <p>Satu tempat untuk semua informasi tentang museum</p>
+                    <a href="/koleksi" class="more-button">Jelajahi Koleksi <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
             @endif
@@ -98,7 +98,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>Jejak Museum Indonesia <a href="#" class="footer-link">Jamus</a>, by <a href="#" class="footer-link">@mdo</a>.</p>
+            <p>Jejak Museum Indonesia <a href="/" class="footer-link">Jamus</a>, Copyright 2025.</p>
         </div>
     </footer>
 

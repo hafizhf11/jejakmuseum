@@ -92,13 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                showToast('Terjadi kesalahan. Silakan coba lagi.');
+                // Ubah pesan error untuk menambahkan link login
+                showToast('Terjadi kesalahan, silahkan <a href="/login" class="toast-link">Login</a> terlebih dahulu.', true);
             });
         });
     });
     
-    // Toast notification function
-    function showToast(message) {
+    // Toast notification function yang dimodifikasi untuk menerima HTML
+    function showToast(message, isHTML = false) {
         // Remove existing toast if any
         const existingToast = document.querySelector('.toast-notification');
         if (existingToast) {
@@ -108,7 +109,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create new toast
         const toast = document.createElement('div');
         toast.className = 'toast-notification';
-        toast.textContent = message;
+        
+        // Set content as HTML or text based on isHTML parameter
+        if (isHTML) {
+            toast.innerHTML = message;
+        } else {
+            toast.textContent = message;
+        }
+        
         document.body.appendChild(toast);
         
         // Show toast with animation
@@ -119,62 +127,5 @@ document.addEventListener('DOMContentLoaded', function() {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, 3000);
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const favoriteBtn = document.querySelector('.favorite-btn');
-    
-    if (favoriteBtn) {
-        favoriteBtn.addEventListener('click', function() {
-            const postId = this.dataset.postId;
-            const isActive = this.classList.contains('active');
-            
-            // Optimistic UI update
-            this.classList.toggle('active');
-            
-            if (this.classList.contains('active')) {
-                this.querySelector('i').classList.remove('bi-star');
-                this.querySelector('i').classList.add('bi-star-fill');
-                this.title = 'Hapus dari favorit';
-            } else {
-                this.querySelector('i').classList.remove('bi-star-fill');
-                this.querySelector('i').classList.add('bi-star');
-                this.title = 'Simpan ke favorit';
-            }
-            
-            // Call API
-            fetch(`/favorite/${postId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Revert UI if failed
-                this.classList.toggle('active');
-                
-                if (this.classList.contains('active')) {
-                    this.querySelector('i').classList.remove('bi-star');
-                    this.querySelector('i').classList.add('bi-star-fill');
-                    this.title = 'Hapus dari favorit';
-                } else {
-                    this.querySelector('i').classList.remove('bi-star-fill');
-                    this.querySelector('i').classList.add('bi-star');
-                    this.title = 'Simpan ke favorit';
-                }
-            });
-        });
     }
 });

@@ -4,22 +4,23 @@
 <div class="stats-section">
     <div class="stats-content">
         <p>
-            Museum Trace Indonesia is an online catalog of <strong>184 522</strong> artworks
-            <br>of which <strong>28 492</strong> in public domain
+            Temukan koleksi terbaik dari berbagai museum Indonesia, 
+            <br> semua dalam satu tempat sebagai referensi kunjungan Anda!
         </p>
     </div>
 </div>
 
-<div class="recommendation-section">
+<div class="recommendation-section loading">
     <div class="recommendation-content">
         <div class="recommendation-label">Eksplorasi Koleksi Museum Kami</div>
         <h2 class="recommendation-title">Jejak Museum Indonesia</h2>
         <div class="recommendation-description">
             <p>Katalog daring yang menghimpun informasi museum-museum di seluruh penjuru Nusantara. Melalui platform ini, kami menghadirkan pengalaman menjelajah koleksi dan sejarah museum secara digital sebagai upaya pelestarian budaya Indonesia di era modern. Dari artefak kuno hingga karya seni kontemporer, Jejak Museum Indonesia menjadi jembatan antara kekayaan masa lalu dan generasi masa kini.</p>
         </div>
-        <a href="/koleksi" class="explore-button">Explore collection <i class="bi bi-arrow-right"></i></a>
+        <a href="/categories" class="explore-button">Cari Kategori Museum <i class="bi bi-arrow-right"></i></a>
     </div>
 </div>
+
 
 <div class="articles-section">
     <div class="container">
@@ -66,6 +67,7 @@
                             </div>
                         </div>
                     </div>
+                    <a href="/articles/{{ $latestArticles[0]->slug }}" class="text-decoration-none"></a>
                 </div>
                 
                 <!-- Other Articles - 3 artikel berikutnya -->
@@ -113,8 +115,6 @@
     </div>
 </div>
 
-
-<!-- Collections Section - Dipindahkan ke posisi paling bawah -->
 <div class="collections-section">
     <div class="container">
         <div class="collections-header">
@@ -122,13 +122,12 @@
             <a href="/koleksi" class="more-link">More collections <i class="bi bi-arrow-right"></i></a>
         </div>
         
-        <div class="collections-slider">
-            <div class="collections-wrapper">
+        <div class="collections-container">
+            <div class="collections-wrapper custom-scrollbar">
                 @if(isset($latestPosts) && $latestPosts->count())
                     @foreach($latestPosts as $post)
                         <div class="collection-item">
                             <div class="artwork-image">
-                                <!-- Link pada gambar seperti di koleksi.blade.php -->
                                 <a href="/posts/{{ $post->slug }}" class="artwork-link">
                                     @if($post->image)
                                         <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
@@ -181,104 +180,8 @@
         </div>
     </div>
 </div>
-<!-- End Collections Section -->
 @endsection
 
-<!-- Tambahkan di bagian head -->
-@section('head')
-<style>
-    .collections-slider {
-        position: relative;
-        margin: 30px 0;
-    }
-
-    .collections-wrapper {
-        display: flex;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        gap: 20px;
-        padding: 10px 0;
-    }
-
-    .collections-wrapper::-webkit-scrollbar {
-        display: none;
-    }
-
-    .collection-item {
-        flex: 0 0 auto;
-        width: 300px;
-        transition: transform 0.3s;
-    }
-
-    .scroll-indicator {
-    text-align: center;
-    margin-top: 15px;
-    color: #999;
-    font-size: 0.9rem;
-    }
-
-    .articles-section {
-        padding: 60px 0;
-        background-color: #f8f5f2;
-    }
-
-    .articles-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .section-title {
-        color: #6b4226;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .more-link {
-        color: #8b5d33;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .featured-article {
-        background-color: white;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-
-    .featured-image img {
-        height: 400px;
-        width: 100%;
-        object-fit: cover;
-    }
-
-    .article-card {
-        transition: transform 0.3s;
-        border: none;
-    }
-    
-    .article-card:hover {
-        transform: translateY(-5px);
-    }
-    
-    @media (max-width: 768px) {
-        .featured-image img {
-            height: 250px;
-        }
-        
-        .featured-content {
-            padding: 1.5rem;
-        }
-    }
-
-</style>
-@endsection
-
-<!-- Tambahkan inline script di bagian akhir -->
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -333,6 +236,34 @@
             slider.addEventListener('scroll', updateButtonState);
             window.addEventListener('resize', updateButtonState);
         }
+        
+        // Menambahkan script untuk fallback image pada recommendation section
+        const recommendationSection = document.querySelector('.recommendation-section');
+        
+        // Cek apakah gambar lokal tersedia
+        const img = new Image();
+        img.onload = function() {
+            // Gambar berhasil dimuat, gunakan gambar lokal
+            recommendationSection.classList.remove('loading');
+            recommendationSection.classList.add('local-bg');
+        };
+        
+        img.onerror = function() {
+            // Gambar gagal dimuat, gunakan fallback
+            recommendationSection.classList.remove('loading');
+            recommendationSection.classList.add('fallback-bg');
+        };
+        
+        // Set sumber gambar yang akan dicek
+        img.src = '/img/recom.jpg';
+        
+        // Set timeout untuk fallback jika terlalu lama
+        setTimeout(function() {
+            if (recommendationSection.classList.contains('loading')) {
+                recommendationSection.classList.remove('loading');
+                recommendationSection.classList.add('fallback-bg');
+            }
+        }, 3000); // Tunggu 3 detik maksimum
     });
 </script>
 

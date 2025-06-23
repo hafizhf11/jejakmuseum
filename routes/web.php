@@ -110,3 +110,4 @@ Route::get('/search', [SearchController::class, 'index']);
 
 // Sesuaikan dengan pola yang Anda gunakan untuk reviews dan posts
 Route::resource('/users', UserManagementController::class)->except(['create', 'store', 'edit', 'update']);
+
